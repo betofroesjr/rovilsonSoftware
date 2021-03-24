@@ -1,0 +1,120 @@
+package br.edu.ufu.doutorado.pca.modelo;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
+public class Mensagem {
+
+	
+	private List<Pictograma> pictogramas;
+
+	public List<Pictograma> getPictogramas() {
+		return pictogramas;
+	}
+
+	public void setPictogramas(List<Pictograma> pictogramas) {
+		this.pictogramas = pictogramas;
+	}
+	
+	public String toString() {
+		String retorno = "";
+		for (Pictograma pictograma : this.pictogramas) {
+			retorno += pictograma + " ";
+		}
+		return retorno;
+	}
+	
+	public Mensagem() {
+		this.pictogramas = new ArrayList<Pictograma>();
+	}
+	
+	public static List<Mensagem> agruparTextoColeta() {
+		return agruparMensagens("textoColeta.txt");
+	}
+	
+	public static Mensagem agruparTextoEntrada(String arquivo) {
+		Mensagem mensagem = new Mensagem();
+		List<Pictograma> dicionario = Pictograma.getDicionario();
+		
+		try {
+			File csv = new File(Pictograma.DIR + "\\" + arquivo);
+			BufferedReader reader = new BufferedReader(new FileReader(csv));
+			String linha;
+			while ((linha = reader.readLine()) != null) {
+				linha = linha.replace(",", " ").trim();
+				if (! linha.equals("")) {
+					String[] frases = linha.split(Pattern.quote("."));
+					
+					for (String frase : frases) {
+						String[] palavras = frase.split(" ");
+						for (String palavra : palavras) {
+							palavra = palavra.trim();
+							Pictograma pictograma = Pictograma.buscar(palavra, dicionario);
+							if (pictograma != null) {
+								mensagem.getPictogramas().add(pictograma);								
+							}
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return mensagem;
+	}
+	
+	public static List<Mensagem> agruparMensagens(String arquivoTexto) {
+		List<Mensagem> mensagens = new ArrayList<Mensagem>();
+		List<Pictograma> dicionario = Pictograma.getDicionario();
+		
+		try {
+			File csv = new File(Pictograma.DIR + "\\" + arquivoTexto);
+			BufferedReader reader = new BufferedReader(new FileReader(csv));
+			String linha;
+			while ((linha = reader.readLine()) != null) {
+				linha = linha.replace(",", " ").trim();
+				if (! linha.equals("")) {
+					String[] frases = linha.split(Pattern.quote("."));
+					
+					for (String frase : frases) {
+						Mensagem mensagem = new Mensagem();
+						String[] palavras = frase.split(" ");
+						for (String palavra : palavras) {
+							palavra = palavra.trim();
+							Pictograma pictograma = Pictograma.buscar(palavra, dicionario);
+							if (pictograma != null) {
+								mensagem.getPictogramas().add(pictograma);								
+							}
+						}
+						if (mensagem.getPictogramas().size() > 0)
+							mensagens.add(mensagem);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return mensagens;
+	}
+
+
+	public static String formatoArquivo(Mensagem mensagem) {
+		String retorno = "";
+		for (int i = 0; i < mensagem.getPictogramas().size(); i++) {
+			Pictograma pic = mensagem.getPictogramas().get(i);
+			retorno += pic.toString();
+			if (i < mensagem.getPictogramas().size() - 1) {
+				retorno += " | ";
+			}
+		}
+		return retorno;
+	}
+	
+	
+}
