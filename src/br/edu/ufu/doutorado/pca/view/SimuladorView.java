@@ -46,9 +46,9 @@ public class SimuladorView extends Application {
 	}
 
 	private void criarScenePrincipal() {
-		FXMLLoader loader = getScreen("/fxml/Principal.fxml", controllerPrincipal);
+		FXMLLoader loader = getScreen("fxml/Principal.fxml", controllerPrincipal);
 		try {
-			scenePrincipal = new Scene((VBox) loader.load());
+			scenePrincipal = new Scene((VBox)loader.load());
 			controllerPrincipal = loader.getController();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -56,9 +56,9 @@ public class SimuladorView extends Application {
 	}
 
 	private void criarSceneBusca() {
-		FXMLLoader loader = getScreen("/fxml/BuscaPictograma.fxml", controllerBusca);
+		FXMLLoader loader = getScreen("fxml/BuscaPictograma.fxml", controllerBusca);
 		try {
-			sceneBusca = new Scene((VBox) loader.load());
+			sceneBusca = new Scene((VBox)loader.load());
 			controllerBusca = loader.getController();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -66,14 +66,17 @@ public class SimuladorView extends Application {
 	}
 
 	private FXMLLoader getScreen(String caminho, ISceneAcionador controller) {
-		try {
-			FXMLLoader fxmlLoader = new FXMLLoader();
-			fxmlLoader.setLocation(getClass().getResource(caminho));
-			return fxmlLoader;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return null;
-		}
+	    try
+	    {
+	    	FXMLLoader fxmlLoader = new FXMLLoader();
+	    	fxmlLoader.setLocation(getClass().getResource("/" + caminho));
+	    	return fxmlLoader;
+	    }
+	    catch ( Exception ex )
+	    {
+	        ex.printStackTrace();
+	        return null;
+	    } 
 	}
 
 	@Override
@@ -92,8 +95,7 @@ public class SimuladorView extends Application {
 	}
 
 	private void tocarSom(Comando comando) {
-		String musicFile = getClass().getResource(comando.getCaminho()).toExternalForm(); // For
-																											// example
+		String musicFile = getClass().getResource(comando.getCaminho()).toExternalForm() ;     // For example
 
 		Media sound = new Media(musicFile);
 		MediaPlayer mediaPlayer = new MediaPlayer(sound);
@@ -107,37 +109,37 @@ public class SimuladorView extends Application {
 		}
 
 		Timeline timer = new Timeline(new KeyFrame(Duration.millis(20), new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				if (estado.equals(AcionadorEstado.ON)) {
-					long tempo = System.currentTimeMillis() - SimuladorView.tempo;
-
-					List<Comando> comandoTemp = new ArrayList<Comando>();
-					comandoTemp.addAll(comando);
-
-					if (Acionador.classificar(tempo).equals(Comando.CURTO) && !tocouCurto) {
-						tocarSom(Comando.CURTO);
-						comandoTemp.add(Comando.CURTO);
-						processarCaractere(Acionador.palavra(comandoTemp));
-						tocouCurto = true;
-					} else if (Acionador.classificar(tempo).equals(Comando.LONGO) && !tocouLongo) {
-						tocarSom(Comando.LONGO);
-						comandoTemp.add(Comando.LONGO);
-						processarCaractere(Acionador.palavra(comandoTemp));
-						tocouLongo = true;
-					} else if (Acionador.classificar(tempo).equals(Comando.CANCELAR) && !tocouCancelar) {
-						tocarSom(Comando.CANCELAR);
-						processarCaractere(Acionador.palavra(comandoTemp));
-						tocouCancelar = true;
-					}
-				}
-				if (esperandoDwell) {
-					long tempo = System.currentTimeMillis() - SimuladorView.tempoDwell;
-					if (Acionador.isDwellTime(tempo)) {
-						processarPalavra();
-					}
-				}
-			}
+		    @Override
+		    public void handle(ActionEvent event) {
+		    	if (estado.equals(AcionadorEstado.ON)) {
+		    		long tempo = System.currentTimeMillis() - SimuladorView.tempo;
+		    		
+		    		List<Comando> comandoTemp = new ArrayList<Comando>();
+		    		comandoTemp.addAll(comando);
+		    		
+			    	if (Acionador.classificar(tempo).equals(Comando.CURTO) && ! tocouCurto) {
+			    		tocarSom(Comando.CURTO);
+			    		comandoTemp.add(Comando.CURTO);
+			    		processarCaractere(Acionador.palavra(comandoTemp));
+			    		tocouCurto = true;
+			    	} else if (Acionador.classificar(tempo).equals(Comando.LONGO) && ! tocouLongo) {
+			    		tocarSom(Comando.LONGO);
+			    		comandoTemp.add(Comando.LONGO);
+			    		processarCaractere(Acionador.palavra(comandoTemp));
+			    		tocouLongo = true;
+			    	} else if (Acionador.classificar(tempo).equals(Comando.CANCELAR) && ! tocouCancelar) {
+			    		tocarSom(Comando.CANCELAR);
+			    		processarCaractere(Acionador.palavra(comandoTemp));
+			    		tocouCancelar = true;
+			    	}
+		    	}
+		    	if (esperandoDwell) {
+		    		long tempo = System.currentTimeMillis() - SimuladorView.tempoDwell;
+		    		if (Acionador.isDwellTime(tempo)) {
+		    			processarPalavra();
+		    		}
+		    	}
+		    }
 		}));
 		timer.setCycleCount(Timeline.INDEFINITE);
 		timer.play();
@@ -189,11 +191,15 @@ public class SimuladorView extends Application {
 	}
 
 	private void processarPalavra() {
-		tocarSom(Comando.DWELL);
-		esperandoDwell = false;
+		try {
+			tocarSom(Comando.DWELL);
+			esperandoDwell = false;
 
-		controllerAtual.processarPalavra(Acionador.palavra(comando));
-		comando = new ArrayList<Comando>();
+			controllerAtual.processarPalavra(Acionador.palavra(comando));
+			comando = new ArrayList<Comando>();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void processarCaractere(String comando) {
@@ -205,10 +211,14 @@ public class SimuladorView extends Application {
 	}
 
 	public static void carregarPesquisa() {
-		controllerAtual = controllerBusca;
-		controllerAtual.setParametro(controllerPrincipal.getParametro());
-		controllerAtual.abrir();
-		getStage().setScene(sceneBusca);
+		try {
+			controllerAtual = controllerBusca;
+			controllerAtual.setParametro(controllerPrincipal.getParametro());
+			controllerAtual.abrir();
+			getStage().setScene(sceneBusca);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void carregarPrincipal() {
@@ -217,12 +227,16 @@ public class SimuladorView extends Application {
 	}
 
 	public static void carregarPrincipal(Pictograma pictograma) {
-		List<Object> params = new ArrayList<Object>();
-		params.add(pictograma);
-		controllerAtual = controllerPrincipal;
-		controllerAtual.setParametro(params);
-		controllerAtual.abrir();
-		getStage().setScene(scenePrincipal);
+		try {
+			List<Object> params = new ArrayList<Object>();
+			params.add(pictograma);
+			controllerAtual = controllerPrincipal;
+			controllerAtual.setParametro(params);
+			controllerAtual.abrir();
+			getStage().setScene(scenePrincipal);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

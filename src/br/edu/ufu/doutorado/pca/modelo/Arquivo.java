@@ -9,8 +9,8 @@ public class Arquivo {
 	
 	public static void escrever(String arquivo, String conteudo) {
 		try {
-			URL fileUrl = Mensagem.class.getResource("/"+arquivo);
-			File file = new File(fileUrl.getFile());
+			String pathProject = System.getProperty("user.dir");
+			File file = new File(pathProject+"/"+arquivo);
 			FileWriter writer = new FileWriter(file, true);
 			writer.append(conteudo + System.lineSeparator());
 			writer.close();

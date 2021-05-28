@@ -9,9 +9,9 @@ import br.edu.ufu.doutorado.pca.modelo.Pictograma;
 public interface IPreditor {
 
 	
-	public List<Pictograma> sugerir(Mensagem mensagemAtual, String busca, Grupo grupoSelecionado, Integer limite);
+	public List<Pictograma> sugerir(Mensagem mensagemAtual, String busca, Grupo grupoSelecionado, Integer limite) throws Exception;
 	
-	public void treinar(List<Mensagem> mensagens);
+	public void treinar(List<Mensagem> mensagens) throws Exception;
 	
 	public void iniciarNovaSugestao();
 	

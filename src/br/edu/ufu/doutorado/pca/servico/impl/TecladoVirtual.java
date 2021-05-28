@@ -43,7 +43,7 @@ public class TecladoVirtual implements ITecladoVirtual {
 	
 	@Override
 	public Integer contarAcaoBusca(IPreditor preditor, Mensagem mensagemAtual,
-			Pictograma selecao) {
+			Pictograma selecao) throws Exception {
 		Integer acao = 0;
 		
 		String digitacao = "";

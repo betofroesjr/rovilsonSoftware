@@ -26,39 +26,39 @@ import br.edu.ufu.doutorado.pca.view.fxml.PictogramaImagem;
 public class BuscaPictograma extends VBox implements Initializable, ISceneAcionador {
 
 	@FXML
-	protected TilePane hbSugestao;
+	public TilePane hbSugestao;
 	@FXML
-	protected HBox hbBusca;
+	public HBox hbBusca;
 	@FXML
-	protected Label lbBack;
+	public Label lbBack;
 	@FXML
-	protected Label lbPalavra;
+	public Label lbPalavra;
 	@FXML
-	protected Label lbVoltar;
+	public Label lbVoltar;
 	@FXML
-	protected Label lbTecla1;
+	public Label lbTecla1;
 	@FXML
-	protected Label lbTecla2;
+	public Label lbTecla2;
 	@FXML
-	protected Label lbTecla3;
+	public Label lbTecla3;
 	@FXML
-	protected Label lbTecla4;
+	public Label lbTecla4;
 	@FXML
-	protected Label lbTecla5;
+	public Label lbTecla5;
 	@FXML
-	protected VBox vbxTecla1;
+	public VBox vbxTecla1;
 	@FXML
-	protected VBox vbxTecla2;
+	public VBox vbxTecla2;
 	@FXML
-	protected VBox vbxTecla3;
+	public VBox vbxTecla3;
 	@FXML
-	protected VBox vbxTecla4;
+	public VBox vbxTecla4;
 	@FXML
-	protected VBox vbxTecla5;
+	public VBox vbxTecla5;
 	@FXML
-	protected Pane pnVoltar;
+	public Pane pnVoltar;
 	@FXML
-	protected Pane pnBack;
+	public Pane pnBack;
 	
 	private Mensagem mensagemColeta;
 	
@@ -75,7 +75,7 @@ public class BuscaPictograma extends VBox implements Initializable, ISceneAciona
 	private List<String> textoAtual;
 	
 	
-	public void abrir() {
+	public void abrir() throws Exception {
 		core.iniciarPesquisa();
 		textoAtual = new ArrayList<String>();
 		hbBusca.getChildren().clear();
@@ -83,7 +83,7 @@ public class BuscaPictograma extends VBox implements Initializable, ISceneAciona
 		sugerir();
 	}
 	
-	private void sugerir() {
+	private void sugerir() throws Exception {
 		// CARREGAR LISTA DE PICTOGRAMAS INICIAL
 		int limitePictograma = palavras.size();
 		List<Pictograma> sugestaoInicial = core.listaSugestao(mensagemAtual, grupo, TecladoVirtual.getPalavra(textoAtual), limitePictograma);
@@ -92,34 +92,38 @@ public class BuscaPictograma extends VBox implements Initializable, ISceneAciona
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		palavras = Palavra.palavras(SimuladorView.TAMANHO_PALAVRA);
-		
-		lbPalavra.setText("");
-		
-		lbTecla1.setText(palavras.get(0));
-		vbxTecla1.setOnMouseClicked(e -> processarTecla(TecladoVirtual.getCaracteres(0)));
-		palavras.remove(0);
-		lbTecla2.setText(palavras.get(0));
-		vbxTecla2.setOnMouseClicked(e -> processarTecla(TecladoVirtual.getCaracteres(1)));
-		palavras.remove(0);
-		lbTecla3.setText(palavras.get(0));
-		vbxTecla3.setOnMouseClicked(e -> processarTecla(TecladoVirtual.getCaracteres(2)));
-		palavras.remove(0);
-		lbTecla4.setText(palavras.get(0));
-		vbxTecla4.setOnMouseClicked(e -> processarTecla(TecladoVirtual.getCaracteres(3)));
-		palavras.remove(0);
-		lbTecla5.setText(palavras.get(0));
-		vbxTecla5.setOnMouseClicked(e -> processarTecla(" "));
-		palavras.remove(0);
-		
-		lbVoltar.setText(palavras.get(0));
-		pnVoltar.setOnMouseClicked(e -> processarVoltar());
-		palavras.remove(0);
-		lbBack.setText(palavras.get(0));
-		pnBack.setOnMouseClicked(e -> processarBackspace());
-		palavras.remove(0);
-		
-		textoAtual = new ArrayList<String>();
+		try {
+			palavras = Palavra.palavras(SimuladorView.TAMANHO_PALAVRA);
+			
+			lbPalavra.setText("");
+			
+			lbTecla1.setText(palavras.get(0));
+			vbxTecla1.setOnMouseClicked(e -> processarTecla(TecladoVirtual.getCaracteres(0)));
+			palavras.remove(0);
+			lbTecla2.setText(palavras.get(0));
+			vbxTecla2.setOnMouseClicked(e -> processarTecla(TecladoVirtual.getCaracteres(1)));
+			palavras.remove(0);
+			lbTecla3.setText(palavras.get(0));
+			vbxTecla3.setOnMouseClicked(e -> processarTecla(TecladoVirtual.getCaracteres(2)));
+			palavras.remove(0);
+			lbTecla4.setText(palavras.get(0));
+			vbxTecla4.setOnMouseClicked(e -> processarTecla(TecladoVirtual.getCaracteres(3)));
+			palavras.remove(0);
+			lbTecla5.setText(palavras.get(0));
+			vbxTecla5.setOnMouseClicked(e -> processarTecla(" "));
+			palavras.remove(0);
+			
+			lbVoltar.setText(palavras.get(0));
+			pnVoltar.setOnMouseClicked(e -> processarVoltar());
+			palavras.remove(0);
+			lbBack.setText(palavras.get(0));
+			pnBack.setOnMouseClicked(e -> processarBackspace());
+			palavras.remove(0);
+			
+			textoAtual = new ArrayList<String>();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void carregarSugestao(List<Pictograma> pictogramas) {
@@ -143,17 +147,21 @@ public class BuscaPictograma extends VBox implements Initializable, ISceneAciona
 	}
 	
 	private void processarTecla(String tecla) {
-		if (this.coleta) {
-			this.mensagemColeta.getPictogramas().add(new Pictograma(tecla, Grupo.OPCAO));
+		try {
+			if (this.coleta) {
+				this.mensagemColeta.getPictogramas().add(new Pictograma(tecla, Grupo.OPCAO));
+			}
+			
+			textoAtual.add(tecla);
+			atualizarMensagemAtual();
+			sugerir();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
-		textoAtual.add(tecla);
-		atualizarMensagemAtual();
-		sugerir();
 	}
 
 	@Override
-	public void processarPalavra(String comando) {
+	public void processarPalavra(String comando) throws Exception {
 		lbPalavra.setText("");
 		if (comando.equals(lbVoltar.getText())) {
 			processarVoltar();
@@ -196,17 +204,21 @@ public class BuscaPictograma extends VBox implements Initializable, ISceneAciona
 	}
 	
 	private void processarBackspace() {
-		if (this.coleta) {
-			this.mensagemColeta.getPictogramas().add(new Pictograma("BACKSPACE", Grupo.OPCAO));
+		try {
+			if (this.coleta) {
+				this.mensagemColeta.getPictogramas().add(new Pictograma("BACKSPACE", Grupo.OPCAO));
+			}
+			
+			this.core.iniciarPesquisa();
+			int i = this.textoAtual.size();
+			if (i > 0) {
+				this.textoAtual.remove(i - 1);
+			}
+			atualizarMensagemAtual();
+			sugerir();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
-		this.core.iniciarPesquisa();
-		int i = this.textoAtual.size();
-		if (i > 0) {
-			this.textoAtual.remove(i - 1);
-		}
-		atualizarMensagemAtual();
-		sugerir();
 	}
 	
 	private void processarVoltar() {

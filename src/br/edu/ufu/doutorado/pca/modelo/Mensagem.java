@@ -1,16 +1,10 @@
 package br.edu.ufu.doutorado.pca.modelo;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -19,6 +13,8 @@ import java.util.regex.Pattern;
 
 public class Mensagem {
 	
+	public static final String TEXTO_COLETA = "textoColeta.txt";
+
 	public static final int DEFAULT_BUFFER_SIZE = 8192;
 	
 	private List<Pictograma> pictogramas;
@@ -43,21 +39,18 @@ public class Mensagem {
 		this.pictogramas = new ArrayList<Pictograma>();
 	}
 	
-	public static List<Mensagem> agruparTextoColeta() {
-		return agruparMensagens("textoColeta.txt");
+	public static List<Mensagem> agruparTextoColeta() throws Exception {
+		return agruparMensagens(TEXTO_COLETA);
 	}
 	
-	public static Mensagem agruparTextoEntrada(String arquivo) {
+	public static Mensagem agruparTextoEntrada(String arquivo) throws Exception {
 		Mensagem mensagem = new Mensagem();
-		List<Pictograma> dicionario = Pictograma.getDicionario();
 		
 		try {
-//			URL fileUrl = Mensagem.class.getResource("/"+arquivo);
-//			File csv = new File(arquivo);
-//			BufferedReader reader = new BufferedReader(new FileReader(csv));
-
-			BufferedReader reader = obterBufferReader(arquivo);
+			List<Pictograma> dicionario = Pictograma.getDicionario();
 			
+			BufferedReader reader = obterBufferReader(arquivo);
+
 			String linha;
 			while ((linha = reader.readLine()) != null) {
 				linha = linha.replace(",", " ").trim();
@@ -77,21 +70,22 @@ public class Mensagem {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw e;
 		}
 		
 		return mensagem;
 	}
-	
-	public static List<Mensagem> agruparMensagens(String arquivoTexto) {
+
+	public static List<Mensagem> agruparMensagens(String arquivoTexto) throws Exception {
 		List<Mensagem> mensagens = new ArrayList<Mensagem>();
-		List<Pictograma> dicionario = Pictograma.getDicionario();
 		
 		try {
-			Mensagem mensagem = new Mensagem();
-
-			BufferedReader reader = obterBufferReader(arquivoTexto);
+			List<Pictograma> dicionario = Pictograma.getDicionario();
 			
+			Mensagem mensagem = new Mensagem();
+			
+			BufferedReader reader = obterBufferReader(arquivoTexto);
+
 			String linha;
 			while ((linha = reader.readLine()) != null) {
 				linha = linha.replace(",", " ").trim();
@@ -114,24 +108,25 @@ public class Mensagem {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+		   throw e;
 		}
 		
 		return mensagens;
 	}
 
-	public static BufferedReader obterBufferReader(String arquivoTexto) {
-
-		InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(arquivoTexto);
+	public static BufferedReader obterBufferReader(String arquivo) throws IOException {
+		URL fileUrl = Mensagem.class.getResource("/"+arquivo);		
+		File csv = new File(arquivo);
+		InputStream inputStream = obterInputStream(arquivo);
 		
 		return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 	}
 	
-	public static InputStream obterInputStream(String caminho) {
+	public static InputStream obterInputStream(String caminho) throws IOException {
 
-		return ClassLoader.getSystemClassLoader().getResourceAsStream(caminho);
+		return Mensagem.class.getResource("/"+caminho).openStream();
 	}
-
+	
 	public static String formatoArquivo(Mensagem mensagem) {
 		String retorno = "";
 		for (int i = 0; i < mensagem.getPictogramas().size(); i++) {

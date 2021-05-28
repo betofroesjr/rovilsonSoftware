@@ -50,11 +50,11 @@ public class Core {
 		preditorSelecionado = preditorFreq;			
 	}
 	
-	public List<Pictograma> listaSugestao(Mensagem mensagem, Grupo grupo, int limite) {
+	public List<Pictograma> listaSugestao(Mensagem mensagem, Grupo grupo, int limite) throws Exception {
 		return listaSugestao(mensagem, grupo, "", limite);
 	}
 	
-	public List<Pictograma> listaSugestao(Mensagem mensagem, Grupo grupo, String busca, int limite) {
+	public List<Pictograma> listaSugestao(Mensagem mensagem, Grupo grupo, String busca, int limite) throws Exception {
 		return preditorSelecionado.sugerir(mensagem, busca, grupo, limite);
 	}
 	

@@ -76,8 +76,7 @@ public class PictogramaImagem extends VBox {
 				
 				imPictograma.setImage(new Image(Mensagem.obterInputStream(caminho)));
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("Imagem não encontrada: " + caminho);
 			}
 
 		}

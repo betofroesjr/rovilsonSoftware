@@ -8,7 +8,7 @@ import br.edu.ufu.doutorado.pca.modelo.Pictograma;
 public interface ITecladoVirtual {
 
 	
-	public Integer contarAcaoBusca(IPreditor preditor, Mensagem mensagemAtual, Pictograma selecao);
+	public Integer contarAcaoBusca(IPreditor preditor, Mensagem mensagemAtual, Pictograma selecao) throws Exception;
 	
 	public Boolean validarDigitacao(String palavra, String digitacaoCodificada);
 	

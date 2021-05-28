@@ -46,7 +46,7 @@ public abstract class Preditor implements IPreditor {
 
 	@Override
 	public abstract List<Pictograma> sugerir(Mensagem mensagemAtual, String busca,
-			Grupo grupoSelecionado, Integer limite);
+			Grupo grupoSelecionado, Integer limite) throws Exception;
 
 	
 	

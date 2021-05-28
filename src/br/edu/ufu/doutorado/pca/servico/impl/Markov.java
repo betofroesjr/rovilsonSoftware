@@ -41,7 +41,7 @@ public class Markov extends Preditor {
 	
 	@Override
 	public List<Pictograma> sugerir(Mensagem mensagemAtual, String busca,
-			Grupo grupoSelecionado, Integer limite) {
+			Grupo grupoSelecionado, Integer limite) throws Exception {
 		
 		// SE A MENSAGEM ATUAL POSSUI O TAMANHO MÍNIMO
 		if (mensagemAtual.getPictogramas().size() >= this.gram) {
@@ -123,7 +123,7 @@ public class Markov extends Preditor {
 	}
 	
 	@Override
-	public void treinar(List<Mensagem> mensagens) {
+	public void treinar(List<Mensagem> mensagens) throws Exception {
 		this.frequencia.treinar(mensagens);
 		treinar(mensagens, frequencia);
 		

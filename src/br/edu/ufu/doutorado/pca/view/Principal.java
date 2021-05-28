@@ -30,25 +30,25 @@ import br.edu.ufu.doutorado.pca.modelo.Grupo;
 public class Principal extends VBox implements Initializable, ISceneAcionador {
 
 	@FXML
-	protected HBox hbGrupo;
+	public HBox hbGrupo;
 	@FXML
-	protected Label lbPalavraAtual;
+	public Label lbPalavraAtual;
 	@FXML
-	protected Label lbPesquisar;
+	public Label lbPesquisar;
 	@FXML
-	protected Label lbBack;
+	public Label lbBack;
 	@FXML
-	protected HBox hbAtual;
+	public HBox hbAtual;
 	@FXML
-	protected HBox hbSugestoes;
+	public HBox hbSugestoes;
 	@FXML
-	protected HBox hbColeta;
+	public HBox hbColeta;
 	@FXML
-	protected Pane hbIniciarColeta;
+	public Pane hbIniciarColeta;
 	@FXML
-	protected Pane pnPesquisar;
+	public Pane pnPesquisar;
 	@FXML
-	protected AnchorPane pnBack;
+	public AnchorPane pnBack;
 	
 	private Mensagem mensagemAtual;
 	
@@ -72,61 +72,68 @@ public class Principal extends VBox implements Initializable, ISceneAcionador {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		core = new Core();
 		try {
+			core = new Core();
 			core.init();
+			palavras = Palavra.palavras(SimuladorView.TAMANHO_PALAVRA);
+			hbGrupo.setSpacing(10);
+			hbSugestoes.setSpacing(10);
+			lbPalavraAtual.setText("");
+			for (Grupo grupo : Grupo.values()) {
+				if (! grupo.equals(Grupo.OPCAO)) {
+					PictogramaGrupo hbPicGrupo = new PictogramaGrupo(grupo);
+					hbPicGrupo.setPalavra(palavras.get(0));
+					palavras.remove(0);
+					hbGrupo.getChildren().add(hbPicGrupo);
+					hbPicGrupo.setOnMouseClicked(e -> processarGrupo(hbPicGrupo));
+				}
+			}
+			
+			((PictogramaGrupo)hbGrupo.getChildren().get(0)).selecionar(true);
+			
+			lbPesquisar.setText(palavras.get(0));
+			pnPesquisar.setOnMouseClicked(e -> processarPesquisar());
+			palavras.remove(0);
+			lbBack.setText(palavras.get(0));
+			pnBack.setOnMouseClicked(e -> processarBackspace());
+			palavras.remove(0);
+			
+			this.mensagemAtual = new Mensagem();
+			
+			int limitePictograma = palavras.size();
+			
+			// CARREGAR LISTA DE PICTOGRAMAS INICIAL
+			List<Pictograma> sugestaoInicial = core.listaSugestao(mensagemAtual, getGrupoSelecionado(), limitePictograma);
+			carregarSugestao(sugestaoInicial);
+			
+			hbIniciarColeta.setOnMouseClicked(e -> iniciarColeta());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		palavras = Palavra.palavras(SimuladorView.TAMANHO_PALAVRA);
-		hbGrupo.setSpacing(10);
-		hbSugestoes.setSpacing(10);
-		lbPalavraAtual.setText("");
-		for (Grupo grupo : Grupo.values()) {
-			if (! grupo.equals(Grupo.OPCAO)) {
-				PictogramaGrupo hbPicGrupo = new PictogramaGrupo(grupo);
-				hbPicGrupo.setPalavra(palavras.get(0));
-				palavras.remove(0);
-				hbGrupo.getChildren().add(hbPicGrupo);
-				hbPicGrupo.setOnMouseClicked(e -> processarGrupo(hbPicGrupo));
-			}
-		}
-		
-		((PictogramaGrupo)hbGrupo.getChildren().get(0)).selecionar(true);
-		
-		lbPesquisar.setText(palavras.get(0));
-		pnPesquisar.setOnMouseClicked(e -> processarPesquisar());
-		palavras.remove(0);
-		lbBack.setText(palavras.get(0));
-		pnBack.setOnMouseClicked(e -> processarBackspace());
-		palavras.remove(0);
-		
-		this.mensagemAtual = new Mensagem();
-		
-		int limitePictograma = palavras.size();
-		
-		// CARREGAR LISTA DE PICTOGRAMAS INICIAL
-		List<Pictograma> sugestaoInicial = core.listaSugestao(mensagemAtual, getGrupoSelecionado(), limitePictograma);
-		carregarSugestao(sugestaoInicial);
-		
-		hbIniciarColeta.setOnMouseClicked(e -> iniciarColeta());
 	}
 	
 	public void iniciarColeta() {
-		arquivoColeta = System.currentTimeMillis() + ".txt";
-		
-		idxColeta = 0;
-		this.historicoMensagem = new ArrayList<Mensagem>();
-		this.mensagemAtual = new Mensagem();
-		hbAtual.getChildren().clear();
-		
-		List<Mensagem> mensagens = Mensagem.agruparTextoColeta();
-		coletaAtual = mensagens.get(idxColeta);
-		configurarColeta(coletaAtual);
-		this.coleta = true;		
-		this.mensagemColeta = new Mensagem();
-		
-		Arquivo.escrever(arquivoColeta, this.core.getPreditorSelecionado().getClass().getSimpleName());
+		try {
+			arquivoColeta = System.currentTimeMillis() + ".txt";
+			
+			idxColeta = 0;
+			this.historicoMensagem = new ArrayList<Mensagem>();
+			this.mensagemAtual = new Mensagem();
+			hbAtual.getChildren().clear();
+			
+			List<Mensagem> mensagens = Mensagem.agruparTextoColeta();
+			
+			if(mensagens != null && mensagens.size() > 0) {
+				coletaAtual = mensagens.get(idxColeta);
+				configurarColeta(coletaAtual);				
+				this.coleta = true;		
+				this.mensagemColeta = new Mensagem();
+			}			
+			
+			Arquivo.escrever(arquivoColeta, this.core.getPreditorSelecionado().getClass().getSimpleName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void carregarSugestao(List<Pictograma> pictogramas) {
@@ -141,7 +148,7 @@ public class Principal extends VBox implements Initializable, ISceneAcionador {
 		}
 	}
 	
-	private void concluirFraseColeta() {
+	private void concluirFraseColeta() throws Exception {
 		this.historicoMensagem.add(mensagemColeta);
 		
 		Arquivo.escrever(arquivoColeta, Mensagem.formatoArquivo(mensagemColeta));
@@ -164,32 +171,36 @@ public class Principal extends VBox implements Initializable, ISceneAcionador {
 	}
 	
 	private void configurarColeta(Mensagem mensagem) {
-		hbColeta.getChildren().clear();
-		int j = 0;
-		for (int i = 0; i < mensagem.getPictogramas().size(); i++) {
-			Pictograma pic = mensagem.getPictogramas().get(i);
-			Text lb = new Text(pic.getRotulo());
-			lb.setFont(Font.font("System", FontWeight.BOLD, 42));
-			
-			if (i < this.mensagemAtual.getPictogramas().size()) {
-				Pictograma comparacao = this.mensagemAtual.getPictogramas().get(i);
-				if (comparacao.equals(pic)) {
-					j++;
-					lb.setFill(Color.web("#000000"));
+		try {
+			hbColeta.getChildren().clear();
+			int j = 0;
+			for (int i = 0; i < mensagem.getPictogramas().size(); i++) {
+				Pictograma pic = mensagem.getPictogramas().get(i);
+				Text lb = new Text(pic.getRotulo());
+				lb.setFont(Font.font("System", FontWeight.BOLD, 42));
+				
+				if (i < this.mensagemAtual.getPictogramas().size()) {
+					Pictograma comparacao = this.mensagemAtual.getPictogramas().get(i);
+					if (comparacao.equals(pic)) {
+						j++;
+						lb.setFill(Color.web("#000000"));
+					} else {
+						lb.setFill(Color.web("#" + pic.getGrupo().getCor()));
+						lb.setStyle("-fx-stroke: black;-fx-stroke-width: 1px;");
+					}
 				} else {
 					lb.setFill(Color.web("#" + pic.getGrupo().getCor()));
 					lb.setStyle("-fx-stroke: black;-fx-stroke-width: 1px;");
 				}
-			} else {
-				lb.setFill(Color.web("#" + pic.getGrupo().getCor()));
-				lb.setStyle("-fx-stroke: black;-fx-stroke-width: 1px;");
+				
+				hbColeta.getChildren().add(lb);
 			}
 			
-			hbColeta.getChildren().add(lb);
-		}
-		
-		if (j == mensagem.getPictogramas().size()) {
-			concluirFraseColeta();
+			if (j == mensagem.getPictogramas().size()) {
+				concluirFraseColeta();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -215,11 +226,15 @@ public class Principal extends VBox implements Initializable, ISceneAcionador {
 	}
 	
 	private void processarGrupo(PictogramaGrupo hb) {		
-		selecionarGrupo(hb.getGrupo());
-		carregarSugestao(core.listaSugestao(mensagemAtual, getGrupoSelecionado(), palavras.size()));
-		
-		if (this.coleta) {
-			this.mensagemColeta.getPictogramas().add(new Pictograma("GRUPO", hb.getGrupo()));
+		try {
+			selecionarGrupo(hb.getGrupo());
+			carregarSugestao(core.listaSugestao(mensagemAtual, getGrupoSelecionado(), palavras.size()));
+			
+			if (this.coleta) {
+				this.mensagemColeta.getPictogramas().add(new Pictograma("GRUPO", hb.getGrupo()));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -236,18 +251,22 @@ public class Principal extends VBox implements Initializable, ISceneAcionador {
 	}
 	
 	private void processarPictograma(PictogramaImagem hb) {
-		this.mensagemAtual.getPictogramas().add(hb.getPictograma());
-		Grupo grupo = core.sugerirGrupo(this.mensagemAtual);
-		if (! grupo.equals(this.getGrupoSelecionado())) {
-			selecionarGrupo(grupo);
-			carregarSugestao(core.listaSugestao(mensagemAtual, getGrupoSelecionado(), palavras.size()));
-		}
-				
-		atualizarMensagemAtual();
-		
-		if (this.coleta) {
-			this.mensagemColeta.getPictogramas().add(hb.getPictograma());
-			configurarColeta(this.coletaAtual);
+		try {
+			this.mensagemAtual.getPictogramas().add(hb.getPictograma());
+			Grupo grupo = core.sugerirGrupo(this.mensagemAtual);
+			if (! grupo.equals(this.getGrupoSelecionado())) {
+				selecionarGrupo(grupo);
+				carregarSugestao(core.listaSugestao(mensagemAtual, getGrupoSelecionado(), palavras.size()));
+			}
+					
+			atualizarMensagemAtual();
+			
+			if (this.coleta) {
+				this.mensagemColeta.getPictogramas().add(hb.getPictograma());
+				configurarColeta(this.coletaAtual);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -271,7 +290,7 @@ public class Principal extends VBox implements Initializable, ISceneAcionador {
 		}
 	}
 	
-	public void processarPalavra(String comando) {
+	public void processarPalavra(String comando) throws Exception {
 		if (comando.equals(lbPesquisar.getText())) {
 			processarPesquisar();
 		} else if (comando.equals(lbBack.getText())) {

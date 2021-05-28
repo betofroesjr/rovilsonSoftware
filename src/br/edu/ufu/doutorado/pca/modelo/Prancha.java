@@ -23,7 +23,7 @@ public class Prancha {
 		this.teclado = teclado;
 	}
 	
-	public Integer iniciarTeste(List<Mensagem> textos) {
+	public Integer iniciarTeste(List<Mensagem> textos) throws Exception {
 		Integer acoes = 0;
 		for (Mensagem mensagem : textos) {
 			acoes += iniciarTeste(mensagem);
@@ -31,7 +31,7 @@ public class Prancha {
 		return acoes;
 	}
 	
-	public Integer iniciarTeste(Mensagem texto) {
+	public Integer iniciarTeste(Mensagem texto) throws Exception {
 		this.mensagemAtual = new Mensagem();
 		
 		Integer acoes = 0;
@@ -47,7 +47,7 @@ public class Prancha {
 	}
 	
 	
-	private Integer contarAcao(Pictograma selecao) {
+	private Integer contarAcao(Pictograma selecao) throws Exception {
 		Integer interacao = 0;
 		
 		// ALTERAR O GRUPO DE PICTOGRAMA

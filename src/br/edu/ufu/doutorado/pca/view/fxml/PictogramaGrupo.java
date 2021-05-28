@@ -11,13 +11,13 @@ import br.edu.ufu.doutorado.pca.modelo.Grupo;
 public class PictogramaGrupo extends VBox {
 
 	@FXML
-	protected Label lbLegenda;
+	public Label lbLegenda;
 	@FXML
-	protected Label lbPalavra;	
+	public Label lbPalavra;	
 	@FXML
-	protected VBox vbGrupoExterno;
+	public VBox vbGrupoExterno;
 	@FXML
-	protected VBox vbGrupoInterno;
+	public VBox vbGrupoInterno;
 	
 	private Grupo grupo;
 	

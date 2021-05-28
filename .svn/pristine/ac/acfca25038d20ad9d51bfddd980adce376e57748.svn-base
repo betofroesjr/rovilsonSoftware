@@ -1,9 +1,0 @@
-package br.edu.ufu.doutorado.pca.view.fxml;
-
-public interface ISceneAcionador {
-
-	void processarCancelar();
-	void processarPalavra(String palavra);
-	void processarCaractere(String comando);
-	
-}

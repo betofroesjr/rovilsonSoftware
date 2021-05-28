@@ -1,9 +1,6 @@
 package br.edu.ufu.doutorado.pca.modelo;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -107,7 +104,7 @@ public class Pictograma {
 		dicionario = new HashSet<Pictograma>();
 	}
 	
-	public static List<Pictograma> getDicionario() {
+	public static List<Pictograma> getDicionario() throws Exception {
 		if (dicionario == null) {
 			dicionario = new HashSet<Pictograma>();
 		}
@@ -137,7 +134,7 @@ public class Pictograma {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw e;
 		}
 		lista.addAll(dicionario);
 		return lista;

@@ -21,7 +21,7 @@ public class Frequencia extends Preditor {
 		this.pictogramas = new ArrayList<Pictograma>();
 	}
 	
-	public void treinar(List<Mensagem> mensagens) {
+	public void treinar(List<Mensagem> mensagens) throws Exception {
 		this.pictogramas = Pictograma.getDicionario();
 		
 		

@@ -5,9 +5,9 @@ import java.util.List;
 public interface ISceneAcionador {
 
 	void processarCancelar();
-	void processarPalavra(String palavra);
+	void processarPalavra(String palavra) throws Exception;
 	void processarCaractere(String comando);
-	void abrir();
+	void abrir() throws Exception;
 	List<Object> getParametro();
 	void setParametro(List<Object> obj);
 	
